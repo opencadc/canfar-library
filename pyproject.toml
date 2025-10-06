@@ -1,0 +1,17 @@
+[project]
+name = "library"
+version = "0.1.0"
+description = "CANFAR Science Platform Container Library"
+readme = "README.md"
+authors = [
+    { name = "Shiny Brar", email = "shiny.brar@nrc-cnrc.gc.ca" }
+]
+requires-python = ">=3.9"
+dependencies = [
+    "mkdocs-material>=9.6.21",
+    "pre-commit>=4.3.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
