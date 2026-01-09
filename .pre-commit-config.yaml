@@ -3,7 +3,7 @@ repos:
     hooks:
       - id: json-schema
         name: generate json schema
-        entry: bash -c 'python library/spec.py > .spec.json && git add .spec.json'
+        entry: bash -c 'python library/schema.py > .spec.json && git add .spec.json'
         language: system
         pass_filenames: false
         always_run: true
