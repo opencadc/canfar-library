@@ -40,7 +40,7 @@
             ".",
             "../"
           ],
-          "title": "Context",
+          "title": "Build Context",
           "type": "string"
         },
         "builder": {
@@ -51,7 +51,7 @@
             "classic",
             "oci-import"
           ],
-          "title": "Builder",
+          "title": "Build Backend",
           "type": "string"
         },
         "platforms": {
@@ -62,7 +62,7 @@
           "items": {
             "$ref": "#/$defs/Architecture"
           },
-          "title": "Platforms",
+          "title": "Image Platforms",
           "type": "array"
         },
         "tags": {
@@ -70,7 +70,7 @@
           "items": {
             "type": "string"
           },
-          "title": "Tags",
+          "title": "Image Tags",
           "type": "array"
         },
         "args": {
@@ -87,7 +87,7 @@
           ],
           "default": null,
           "description": "Set build-time variables for the build.",
-          "title": "Args"
+          "title": "Build Args"
         },
         "annotations": {
           "anyOf": [
@@ -103,7 +103,7 @@
           ],
           "default": null,
           "description": "Add annotation to the container image.",
-          "title": "Annotations"
+          "title": "Image Annotations"
         },
         "labels": {
           "anyOf": [
@@ -119,7 +119,7 @@
           ],
           "default": null,
           "description": "Add metadata to the container image.",
-          "title": "Labels"
+          "title": "Image Labels"
         },
         "target": {
           "anyOf": [
@@ -132,7 +132,7 @@
           ],
           "default": null,
           "description": "Set the target build stage to build.",
-          "title": "Target"
+          "title": "Build Target"
         }
       },
       "required": [
@@ -149,12 +149,12 @@
           "description": "Git repository which contains the Dockerfile.",
           "format": "uri",
           "minLength": 1,
-          "title": "Repo",
+          "title": "Repository",
           "type": "string"
         },
         "fetch": {
           "default": "refs/heads/main",
-          "description": "Reference to fetch before resolving commits (e.g., refs/heads/main).",
+          "description": "Reference to fetch before resolving commits.",
           "examples": [
             "refs/heads/main",
             "refs/tags/v1.0.0"
@@ -173,7 +173,7 @@
           ],
           "default": null,
           "description": "Commit SHA to checkout for builds.",
-          "title": "Sha"
+          "title": "Git Commit SHA"
         },
         "tag": {
           "anyOf": [
@@ -186,7 +186,7 @@
           ],
           "default": null,
           "description": "Tag to checkout for builds.",
-          "title": "Tag"
+          "title": "Git Tag"
         }
       },
       "required": [
@@ -220,7 +220,7 @@
           ],
           "default": null,
           "description": "Github handle without the leading '@'.",
-          "title": "Github"
+          "title": "Maintainer Github"
         },
         "gitlab": {
           "anyOf": [
@@ -233,7 +233,7 @@
           ],
           "default": null,
           "description": "GitLab handle without the leading '@'.",
-          "title": "Gitlab"
+          "title": "Maintainer Gitlab"
         }
       },
       "required": [
@@ -268,10 +268,18 @@
   "description": "Manifest information.",
   "properties": {
     "version": {
-      "default": 0.1,
-      "description": "CANFAR Library manifest version.",
+      "default": 0.2,
+      "description": "Library manifest version.",
       "title": "Version",
       "type": "number"
+    },
+    "name": {
+      "description": "Name of the image.",
+      "examples": [
+        "astroml"
+      ],
+      "title": "Name",
+      "type": "string"
     },
     "maintainers": {
       "description": "List of maintainers responsible for the image.",
@@ -283,17 +291,20 @@
     },
     "git": {
       "$ref": "#/$defs/Git",
-      "description": "Git repository information."
+      "description": "Repository information for the image.",
+      "title": "Git Info"
     },
     "build": {
       "$ref": "#/$defs/Build",
-      "description": "Build information for the image."
+      "description": "Build information for the image.",
+      "title": "Build Info"
     },
     "metadata": {
       "$ref": "#/$defs/Metadata"
     }
   },
   "required": [
+    "name",
     "maintainers",
     "git",
     "build",

@@ -1,9 +1,4 @@
-"""
-Pydantic models that describe the structure of Docker Official Image
-`library/*` definitions. The intent is to emit JSON Schema from these
-models so downstream users can author compatible build configuration
-files programmatically.
-"""
+"""JSON Schema for CANFAR Library manifest files."""
 
 from __future__ import annotations
 
@@ -35,17 +30,20 @@ class Builder(str, Enum):
 class Maintainer(BaseModel):
     """Build Maintainer Information."""
 
-    name: str = Field(..., description="Full name of the maintainer.")
+    name: str = Field(..., title="Name", description="Full name of the maintainer.")
     email: str = Field(
         ...,
+        title="Email",
         description="Contact email, required for traceability.",
     )
     github: Optional[str] = Field(
         None,
+        title="Maintainer Github",
         description="Github handle without the leading '@'.",
     )
     gitlab: Optional[str] = Field(
         None,
+        title="Maintainer Gitlab",
         description="GitLab handle without the leading '@'.",
     )
 
@@ -56,19 +54,24 @@ class Git(BaseModel):
     """Git repository which contains build source."""
 
     repo: AnyUrl = Field(
-        ..., description="Git repository which contains the Dockerfile."
+        ...,
+        title="Repository",
+        description="Git repository which contains the Dockerfile.",
     )
     fetch: str = Field(
         "refs/heads/main",
-        description="Reference to fetch before resolving commits (e.g., refs/heads/main).",
+        title="Fetch",
+        description="Reference to fetch before resolving commits.",
         examples=["refs/heads/main", "refs/tags/v1.0.0"],
     )
     sha: Optional[str] = Field(
         None,
+        title="Git Commit SHA",
         description="Commit SHA to checkout for builds.",
     )
     tag: Optional[str] = Field(
         None,
+        title="Git Tag",
         description="Tag to checkout for builds.",
     )
 
@@ -98,42 +101,53 @@ class Build(BaseModel):
 
     path: str = Field(
         ".",
+        title="Path",
         description="Path to the directory containing the Dockerfile; defaults to the root of the repository.",
     )
     dockerfile: str = Field(
         "Dockerfile",
+        title="Dockerfile",
         description="Name of the Dockerfile relative to the path.",
         examples=["Dockerfile", "Dockerfile-alternate"],
     )
     context: str = Field(
         ".",
+        title="Build Context",
         description="Build context path relative to the Dockerfile.",
         examples=[".", "../"],
     )
     builder: str = Field(
         Builder.BUILDKIT,
+        title="Build Backend",
         description="Builder backend used for this entry.",
         examples=[Builder.BUILDKIT, Builder.CLASSIC, Builder.OCI_IMPORT],
     )
     platforms: list[Architecture] = Field(
         default=[Architecture.AMD64],
+        title="Image Platforms",
         description="Set target platforms for the build.",
     )
-    tags: List[str] = Field(..., description="Tags produced by this build entry.")
+    tags: List[str] = Field(
+        ..., title="Image Tags", description="Tags produced by this build entry."
+    )
     args: Optional[dict[str, str]] = Field(
         None,
+        title="Build Args",
         description="Set build-time variables for the build.",
     )
     annotations: Optional[dict[str, str]] = Field(
         None,
+        title="Image Annotations",
         description="Add annotation to the container image.",
     )
     labels: Optional[dict[str, str]] = Field(
         None,
+        title="Image Labels",
         description="Add metadata to the container image.",
     )
     target: Optional[str] = Field(
         None,
+        title="Build Target",
         description="Set the target build stage to build.",
     )
 
@@ -149,18 +163,44 @@ class Metadata(BaseModel):
     project: str = Field(..., description="SRCnet Project name for the image.")
 
 
+class Test(BaseModel):
+    """
+    Test information for the image.
+    """
+
+    cmd: Optional[str] = Field(
+        None,
+        title="Testing Command",
+        description="Command to run in the created container to verify the image is working."
+        " The command is run with `docker run --rm -it <image> <cmd>`, where image is populated automatically from the build process."
+        " If the command returns a non-zero exit code, the test is considered to have failed.",
+        examples=["bash -c 'echo hello world'"],
+    )
+
+
 class Manifest(BaseModel):
     """
     Manifest information.
     """
 
-    version: float = Field(0.1, description="CANFAR Library manifest version.")
-    maintainers: List[Maintainer] = Field(
-        ..., description="List of maintainers responsible for the image."
+    version: float = Field(
+        0.2, title="Version", description="Library manifest version."
     )
-    git: Git = Field(..., description="Git repository information.")
-    build: Build = Field(..., description="Build information for the image.")
-    metadata: Metadata = Field(..., description="Metadata for the image.")
+    name: str = Field(..., description="Name of the image.", examples=["astroml"])
+    maintainers: List[Maintainer] = Field(
+        ...,
+        title="Maintainers",
+        description="List of maintainers responsible for the image.",
+    )
+    git: Git = Field(
+        ..., title="Git Info", description="Repository information for the image."
+    )
+    build: Build = Field(
+        ..., title="Build Info", description="Build information for the image."
+    )
+    metadata: Metadata = Field(
+        ..., title="Metadata", description="Metadata for the image."
+    )
 
 
 if __name__ == "__main__":

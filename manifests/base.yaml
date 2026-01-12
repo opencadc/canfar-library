@@ -1,0 +1,29 @@
+version: 0.1
+name: base
+maintainers:
+  - name: Shiny Brar
+    email: shiny.brar@nrc-cnrc.gc.ca
+    github: shinybrar
+git:
+  repo: https://github.com/opencadc/canfar-library
+  fetch: refs/heads/main
+build:
+  path: images/base
+  dockerfile: Dockerfile
+  context: .
+  platforms:
+    - linux/amd64
+    - linux/arm64
+  tags:
+    - latest
+  labels:
+    org.opencontainers.image.title: "CANFAR Base Image"
+    org.opencontainers.image.description: "Base image for CANFAR Science Platform"
+    org.opencontainers.image.vendor: "Canadian Astronomy Data Centre"
+    org.opencontainers.image.source: "https://github.com/opencadc/canfar-library"
+    org.opencontainers.image.licenses: "AGPL-3.0"
+  annotations:
+    canfar.image.type: "base"
+metadata:
+  identifier: canfar-base
+  project: canfar
