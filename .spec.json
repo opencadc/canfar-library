@@ -133,6 +133,19 @@
           "default": null,
           "description": "Set the target build stage to build.",
           "title": "Build Target"
+        },
+        "test": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Run"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Command to run in the created container to verify the image is working.",
+          "title": "Image Test Command"
         }
       },
       "required": [
@@ -262,6 +275,29 @@
         "project"
       ],
       "title": "Metadata",
+      "type": "object"
+    },
+    "Run": {
+      "description": "Test information for the image.",
+      "properties": {
+        "cmd": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Command to run in the created container to verify the image is working. The command is run with `docker run --rm -it <image> <cmd>`, where image is populated automatically from the build process. If the command returns a non-zero exit code, the test is considered to have failed.",
+          "examples": [
+            "bash -c 'echo hello world'"
+          ],
+          "title": "Testing Command"
+        }
+      },
+      "title": "Run",
       "type": "object"
     }
   },

@@ -24,6 +24,8 @@ build:
     org.opencontainers.image.licenses: "AGPL-3.0"
   annotations:
     canfar.image.type: "base"
+  test:
+    cmd: uv --version
 metadata:
   identifier: canfar-base
   project: canfar

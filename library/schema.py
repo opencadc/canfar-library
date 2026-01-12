@@ -151,6 +151,12 @@ class Build(BaseModel):
         description="Set the target build stage to build.",
     )
 
+    test: Optional[Run] = Field(
+        None,
+        title="Image Test Command",
+        description="Command to run in the created container to verify the image is working.",
+    )
+
     model_config = ConfigDict(extra="forbid")
 
 
@@ -163,7 +169,7 @@ class Metadata(BaseModel):
     project: str = Field(..., description="SRCnet Project name for the image.")
 
 
-class Test(BaseModel):
+class Run(BaseModel):
     """
     Test information for the image.
     """

@@ -24,14 +24,16 @@ The easiest way to request a new image be added to the library is to [open a new
 
 ## How are library images built?
 
-Library images are built based on a manifest file that describes the image's source, build configuration, metadata and other information. The manifest file is written in YAML and is validated against a [JSON schema](https://github.com/opencadc/canfar-library/blob/main/.spec.json) to ensure correctness.
+The library images are;
 
-The build process uses the [Docker Buildx](https://docs.docker.com/buildx/working-with-buildx/) plugin. The build process is automated using [GitHub Actions](https://github.com/opencadc/canfar-library/actions) and the [Docker Buildx](https://github.com/docker/build-push-action) action.
-
-## How do I contribute to the library?
-
-We welcome contributions from the community! Please refer to the [CONTRIBUTING.md](https://github.com/opencadc/canfar-library/blob/main/CONTRIBUTING.md) file for more information on how to contribute.
+- Built in the Github Actions infrastructure to ensure consistent, secure, and reproducible builds.
+- Based on a manifest that describes the image's source, build configuration, metadata and other information. The manifest is written in YAML and is validated against the [Library's JSON schema](https://github.com/opencadc/canfar-library/blob/main/.spec.json) to ensure correctness.
+- Built using the [Docker Buildx](https://docs.docker.com/buildx/working-with-buildx/) tool triggered by changes to the manifest in the repository.
 
 ## Does the library only contain astronomy software?
 
 No, while the majority of the images in the library are astronomy software, we are open to adding any software that is of interest to the astronomy community. That said, we do have a few requirements for images to be added to the library, which are evaluated on a case-by-case basis.
+
+## How do I contribute to the library?
+
+We welcome contributions from the community! Please refer to the [CONTRIBUTING.md](https://github.com/opencadc/canfar-library/blob/main/CONTRIBUTING.md) file for more information on how to contribute.
