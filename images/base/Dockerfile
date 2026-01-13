@@ -10,7 +10,7 @@ FROM ghcr.io/astral-sh/uv:0.9.6@sha256:4b96ee9429583983fd172c33a02ecac5242d63fb4
 
 # CANFAR Base image
 # renovate: datasource=docker depName=ubuntu versioning=ubuntu
-FROM ubuntu:22.04@sha256:104ae83764a5119017b8e8d6218fa0832b09df65aae7d5a6de29a85d813da2fb AS base
+FROM ubuntu:24.04@sha256:c35e29c9450151419d9448b0fd75374fec4fff364a27f176fb458d472dfc9e54 AS base
 
 LABEL org.opencontainers.image.title="CANFAR Base Image"
 LABEL org.opencontainers.image.description="Base image for CANFAR Science Platform"
@@ -28,7 +28,7 @@ COPY --from=uv /uvx /usr/local/bin/uvx
 RUN set -ex; \
     apt-get update -yqq && \
     apt-get install -yqq --no-install-recommends \
-        # renovate: datasource=repology depName=ubuntu_22_04/git versioning=deb
+        # renovate: datasource=repology depName=ubuntu_24_04/git versioning=deb
         git=1:2.34.1-1ubuntu1.15 \
         # # renovate: datasource=repology depName=ubuntu_22_04/vim versioning=deb
         # vim=2:8.2.3995-1ubuntu2.24 \

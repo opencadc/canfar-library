@@ -2,29 +2,19 @@
 
 from __future__ import annotations
 
-from enum import Enum
-from typing import List, Optional, Any
+from typing import List, Optional, Literal
 
-from pydantic import AnyUrl, BaseModel, ConfigDict, Field, model_validator
-
-
-class Architecture(str, Enum):
-    """Container Architectures."""
-
-    AMD64 = "amd64"
-    ARM32V5 = "arm32v5"
-    ARM32V6 = "arm32v6"
-    ARM32V7 = "arm32v7"
-    ARM64V8 = "arm64v8"
-    WINDOWS_AMD64 = "windows-amd64"
+from pydantic import AnyUrl, BaseModel, ConfigDict, Field
 
 
-class Builder(str, Enum):
-    """Docker build backends."""
-
-    BUILDKIT = "buildkit"
-    CLASSIC = "classic"
-    OCI_IMPORT = "oci-import"
+Platform = Literal[
+    "linux/amd64",
+    "linux/arm64",
+    "linux/arm/v7",
+    "linux/arm/v6",
+    "linux/arm/v5",
+    "windows/amd64",
+]
 
 
 class Maintainer(BaseModel):
@@ -39,15 +29,15 @@ class Maintainer(BaseModel):
     github: Optional[str] = Field(
         None,
         title="Maintainer Github",
-        description="Github handle without the leading '@'.",
+        description="Optional Github Username.",
     )
     gitlab: Optional[str] = Field(
         None,
         title="Maintainer Gitlab",
-        description="GitLab handle without the leading '@'.",
+        description="Optional Gitlab Username.",
     )
 
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
 
 class Git(BaseModel):
@@ -56,44 +46,23 @@ class Git(BaseModel):
     repo: AnyUrl = Field(
         ...,
         title="Repository",
-        description="Git repository which contains the Dockerfile.",
+        description="Git repository which contains the build source.",
     )
-    fetch: str = Field(
-        "refs/heads/main",
-        title="Fetch",
-        description="Reference to fetch before resolving commits.",
-        examples=["refs/heads/main", "refs/tags/v1.0.0"],
+    tag: str = Field(
+        ...,
+        title="Git Tag Reference",
+        description="Tag reference to checkout for build.",
+        examples=["refs/tags/v1.0.0", "v1.0.0"],
     )
     sha: Optional[str] = Field(
         None,
-        title="Git Commit SHA",
-        description="Commit SHA to checkout for builds.",
-    )
-    tag: Optional[str] = Field(
-        None,
-        title="Git Tag",
-        description="Tag to checkout for builds.",
+        title="Commit SHA for the Git Tag Reference",
+        description="Optional commit SHA for the Git Tag Reference."
+        "If provided, the build will fail if the SHA does not match the tag reference."
+        "If not provided, the SHA is looked up from the tag reference.",
     )
 
-    @model_validator(mode="before")
-    @classmethod
-    def _sanitize_checkout(cls, data: Any) -> Any:
-        """Check git config.
-
-        Raises:
-            ValueError: If neither sha nor tag is provided.
-            ValueError: If both sha and tag are provided.
-
-        Returns:
-            Any: The sanitized data.
-        """
-        if data.get("sha") is None and data.get("tag") is None:
-            raise ValueError("Either sha or tag must be provided.")
-        if data.get("sha") is not None and data.get("tag") is not None:
-            raise ValueError("Only one of sha or tag may be provided.")
-        return data
-
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
 
 class Build(BaseModel):
@@ -117,38 +86,51 @@ class Build(BaseModel):
         examples=[".", "../"],
     )
     builder: str = Field(
-        Builder.BUILDKIT,
+        "buildkit",
         title="Build Backend",
         description="Builder backend used for this entry.",
-        examples=[Builder.BUILDKIT, Builder.CLASSIC, Builder.OCI_IMPORT],
+        examples=["buildkit"],
     )
-    platforms: list[Architecture] = Field(
-        default=[Architecture.AMD64],
-        title="Image Platforms",
-        description="Set target platforms for the build.",
+    platforms: list[Platform] = Field(
+        default=["linux/amd64"],
+        title="Target Platforms",
+        description="Set target platforms for build.",
+        examples=[["linux/amd64"], ["linux/amd64", "linux/arm64"]],
     )
     tags: List[str] = Field(
-        ..., title="Image Tags", description="Tags produced by this build entry."
+        ...,
+        title="Container Image Tags",
+        description="Tags produced by this build entry.",
+        examples=["latest", "1.0.0"],
     )
     args: Optional[dict[str, str]] = Field(
         None,
         title="Build Args",
         description="Set build-time variables for the build.",
+        examples=[{"FOO": "bar"}],
     )
     annotations: Optional[dict[str, str]] = Field(
         None,
         title="Image Annotations",
         description="Add annotation to the container image.",
+        examples=[{"canfar.image.type": "base"}],
     )
     labels: Optional[dict[str, str]] = Field(
         None,
         title="Image Labels",
         description="Add metadata to the container image.",
+        examples=[
+            {
+                "org.opencontainers.image.title": "CANFAR Base Image",
+                "org.opencontainers.image.description": "Base image for CANFAR Science Platform",
+            }
+        ],
     )
     target: Optional[str] = Field(
         None,
         title="Build Target",
         description="Set the target build stage to build.",
+        examples=["runtime"],
     )
 
     test: Optional[Run] = Field(
@@ -157,7 +139,7 @@ class Build(BaseModel):
         description="Command to run in the created container to verify the image is working.",
     )
 
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
 
 class Metadata(BaseModel):
@@ -170,9 +152,7 @@ class Metadata(BaseModel):
 
 
 class Run(BaseModel):
-    """
-    Test information for the image.
-    """
+    """Test information for the image."""
 
     cmd: Optional[str] = Field(
         None,
@@ -189,9 +169,6 @@ class Manifest(BaseModel):
     Manifest information.
     """
 
-    version: float = Field(
-        0.2, title="Version", description="Library manifest version."
-    )
     name: str = Field(..., description="Name of the image.", examples=["astroml"])
     maintainers: List[Maintainer] = Field(
         ...,
@@ -206,6 +183,16 @@ class Manifest(BaseModel):
     )
     metadata: Metadata = Field(
         ..., title="Metadata", description="Metadata for the image."
+    )
+
+    model_config = ConfigDict(
+        extra="forbid",
+        validate_assignment=True,
+        json_schema_extra={
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "$id": "https://raw.githubusercontent.com/opencadc/canfar-library/main/.spec.json",
+            "title": "CANFAR Library Manifest",
+        },
     )
 
 

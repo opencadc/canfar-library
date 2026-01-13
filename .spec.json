@@ -1,18 +1,5 @@
 {
   "$defs": {
-    "Architecture": {
-      "description": "Container Architectures.",
-      "enum": [
-        "amd64",
-        "arm32v5",
-        "arm32v6",
-        "arm32v7",
-        "arm64v8",
-        "windows-amd64"
-      ],
-      "title": "Architecture",
-      "type": "string"
-    },
     "Build": {
       "additionalProperties": false,
       "description": "Build information.",
@@ -47,30 +34,49 @@
           "default": "buildkit",
           "description": "Builder backend used for this entry.",
           "examples": [
-            "buildkit",
-            "classic",
-            "oci-import"
+            "buildkit"
           ],
           "title": "Build Backend",
           "type": "string"
         },
         "platforms": {
           "default": [
-            "amd64"
+            "linux/amd64"
           ],
-          "description": "Set target platforms for the build.",
+          "description": "Set target platforms for build.",
+          "examples": [
+            [
+              "linux/amd64"
+            ],
+            [
+              "linux/amd64",
+              "linux/arm64"
+            ]
+          ],
           "items": {
-            "$ref": "#/$defs/Architecture"
+            "enum": [
+              "linux/amd64",
+              "linux/arm64",
+              "linux/arm/v7",
+              "linux/arm/v6",
+              "linux/arm/v5",
+              "windows/amd64"
+            ],
+            "type": "string"
           },
-          "title": "Image Platforms",
+          "title": "Target Platforms",
           "type": "array"
         },
         "tags": {
           "description": "Tags produced by this build entry.",
+          "examples": [
+            "latest",
+            "1.0.0"
+          ],
           "items": {
             "type": "string"
           },
-          "title": "Image Tags",
+          "title": "Container Image Tags",
           "type": "array"
         },
         "args": {
@@ -87,6 +93,11 @@
           ],
           "default": null,
           "description": "Set build-time variables for the build.",
+          "examples": [
+            {
+              "FOO": "bar"
+            }
+          ],
           "title": "Build Args"
         },
         "annotations": {
@@ -103,6 +114,11 @@
           ],
           "default": null,
           "description": "Add annotation to the container image.",
+          "examples": [
+            {
+              "canfar.image.type": "base"
+            }
+          ],
           "title": "Image Annotations"
         },
         "labels": {
@@ -119,6 +135,12 @@
           ],
           "default": null,
           "description": "Add metadata to the container image.",
+          "examples": [
+            {
+              "org.opencontainers.image.description": "Base image for CANFAR Science Platform",
+              "org.opencontainers.image.title": "CANFAR Base Image"
+            }
+          ],
           "title": "Image Labels"
         },
         "target": {
@@ -132,6 +154,9 @@
           ],
           "default": null,
           "description": "Set the target build stage to build.",
+          "examples": [
+            "runtime"
+          ],
           "title": "Build Target"
         },
         "test": {
@@ -159,20 +184,19 @@
       "description": "Git repository which contains build source.",
       "properties": {
         "repo": {
-          "description": "Git repository which contains the Dockerfile.",
+          "description": "Git repository which contains the build source.",
           "format": "uri",
           "minLength": 1,
           "title": "Repository",
           "type": "string"
         },
-        "fetch": {
-          "default": "refs/heads/main",
-          "description": "Reference to fetch before resolving commits.",
+        "tag": {
+          "description": "Tag reference to checkout for build.",
           "examples": [
-            "refs/heads/main",
-            "refs/tags/v1.0.0"
+            "refs/tags/v1.0.0",
+            "v1.0.0"
           ],
-          "title": "Fetch",
+          "title": "Git Tag Reference",
           "type": "string"
         },
         "sha": {
@@ -185,25 +209,13 @@
             }
           ],
           "default": null,
-          "description": "Commit SHA to checkout for builds.",
-          "title": "Git Commit SHA"
-        },
-        "tag": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Tag to checkout for builds.",
-          "title": "Git Tag"
+          "description": "Optional commit SHA for the Git Tag Reference.If provided, the build will fail if the SHA does not match the tag reference.If not provided, the SHA is looked up from the tag reference.",
+          "title": "Commit SHA for the Git Tag Reference"
         }
       },
       "required": [
-        "repo"
+        "repo",
+        "tag"
       ],
       "title": "Git",
       "type": "object"
@@ -232,7 +244,7 @@
             }
           ],
           "default": null,
-          "description": "Github handle without the leading '@'.",
+          "description": "Optional Github Username.",
           "title": "Maintainer Github"
         },
         "gitlab": {
@@ -245,7 +257,7 @@
             }
           ],
           "default": null,
-          "description": "GitLab handle without the leading '@'.",
+          "description": "Optional Gitlab Username.",
           "title": "Maintainer Gitlab"
         }
       },
@@ -301,14 +313,11 @@
       "type": "object"
     }
   },
+  "$id": "https://raw.githubusercontent.com/opencadc/canfar-library/main/.spec.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
   "description": "Manifest information.",
   "properties": {
-    "version": {
-      "default": 0.2,
-      "description": "Library manifest version.",
-      "title": "Version",
-      "type": "number"
-    },
     "name": {
       "description": "Name of the image.",
       "examples": [
@@ -346,6 +355,6 @@
     "build",
     "metadata"
   ],
-  "title": "Manifest",
+  "title": "CANFAR Library Manifest",
   "type": "object"
 }

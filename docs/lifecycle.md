@@ -1,4 +1,4 @@
-# Library Image Lifecycle
+# Image Lifecycle
 
 Let's walkthrough the full lifecycle of a library image from start to finish to help you understand how the library works and how you can contribute to it.
 
@@ -20,7 +20,6 @@ In the request issue, you will be asked to provide the following information:
 The image manifest is a YAML file that describes the image's source, build configuration, metadata and other information. The manifest is written in YAML and is validated against the [Library's JSON schema](https://github.com/opencadc/canfar-library/blob/main/.spec.json) to ensure correctness.
 
 ```yaml
-version: 0.1
 name: base
 maintainers:
   - name: Shiny Brar
@@ -28,7 +27,7 @@ maintainers:
     github: shinybrar
 git:
   repo: https://github.com/opencadc/canfar-library
-  fetch: refs/heads/main
+  tag: v0.1.0
 build:
   path: images/base
   dockerfile: Dockerfile
@@ -56,7 +55,7 @@ metadata:
 ## How are library images updated?
 
 1. A change gets commited to the relevant image source git repository, e.g. a new version release, or a bug fix.
-2. A PR to the relevant imange manifest (library/manifests/XXXX.yaml) is opened in this repository to update relevant fields, typically `git.fetch` and/or `git.tag`, `build.tags`, and `metadata` fields, etc.
+2. A PR to the relevant imange manifest (`manifests/XXXX.yaml`) is opened in this repository to update relevant fields, typically `git.tag`, `build.tags`, and `metadata` fields, etc.
 3. The library automations detect the change and update the PR with a full diff of the actual `Dockerfile` changes upstream.
 4. The library automation runs a basic build test on `linux/amd64` to ensure the image builds successfully and executes the `build.test.cmd` if provided.
 5. Once the PR is approved and merged, the library automation builds the image for all the platforms specified in the manifest.
