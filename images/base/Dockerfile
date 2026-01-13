@@ -30,12 +30,6 @@ RUN set -ex; \
     apt-get install -yqq --no-install-recommends \
         # renovate: datasource=repology depName=ubuntu_24_04/git versioning=deb
         git=1:2.34.1-1ubuntu1.15 \
-        # # renovate: datasource=repology depName=ubuntu_22_04/vim versioning=deb
-        # vim=2:8.2.3995-1ubuntu2.24 \
-        # # renovate: datasource=repology depName=ubuntu_22_04/emacs versioning=deb
-        # emacs=1:27.1+1-3ubuntu5.2 \
-        # # renovate: datasource=repology depName=ubuntu_22_04/bash-completion versioning=deb
-        # bash-completion=1:2.11-5ubuntu1 \
         && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
