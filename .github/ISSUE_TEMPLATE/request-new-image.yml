@@ -1,0 +1,171 @@
+name: Request New Image
+description: Request a new image be added to the CANFAR Container Library
+title: "[Image Request]: <image-name>"
+labels:
+  - "request: new image"
+  - "type: request"
+  - "area: images"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping grow the CANFAR Container Library.
+        This request collects the information needed to review your proposal and link it to a manifest PR.
+        You do **not** need to include a manifest YAML draft here; that belongs in the PR.
+
+  - type: input
+    id: project_name
+    attributes:
+      label: Upstream project name
+      description: The software you want added to the CANFAR Container Library.
+      placeholder: Astropy
+    validations:
+      required: true
+
+  - type: input
+    id: git_repo
+    attributes:
+      label: Upstream git repository URL
+      description: Link to the source repository that will be built.
+      placeholder: https://github.com/org/repo
+    validations:
+      required: true
+
+  - type: textarea
+    id: maintainers
+    attributes:
+      label: Upstream maintainer contact info (manifest `maintainers`)
+      description: Include name, email, and GitHub/GitLab handle(s).
+      placeholder: |
+        - Name:
+          Email:
+          GitHub/GitLab:
+    validations:
+      required: true
+
+  - type: textarea
+    id: relevance
+    attributes:
+      label: Astronomy relevance / use cases
+      description: Why is this image useful to the CANFAR community?
+      placeholder: Describe the scientific workflows or tools this enables.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: osi_license
+    attributes:
+      label: OSI-approved license confirmation
+      description: The source code must be available under an OSI-approved license.
+      options:
+        - label: I confirm the upstream project uses an OSI-approved license.
+          required: true
+
+  - type: input
+    id: license_name
+    attributes:
+      label: License name
+      description: Provide the exact license identifier.
+      placeholder: MIT, Apache-2.0, GPL-3.0-only
+    validations:
+      required: true
+
+  - type: input
+    id: manifest_pr
+    attributes:
+      label: Manifest pull request link
+      description: Link to the PR adding the manifest to this repository.
+      placeholder: https://github.com/opencadc/canfar-library/pull/123
+    validations:
+      required: true
+
+  - type: input
+    id: image_name
+    attributes:
+      label: Proposed image name (manifest `name`)
+      placeholder: astroml
+    validations:
+      required: true
+
+  - type: input
+    id: image_tags
+    attributes:
+      label: Proposed image tags (manifest `build.tags`)
+      description: Comma-separated tags to publish.
+      placeholder: 1.0.0, latest
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platforms
+    attributes:
+      label: Target platforms (manifest `build.platforms`)
+      description: Select all that should be built.
+      multiple: true
+      options:
+        - linux/amd64
+        - linux/arm64
+        - linux/arm/v7
+        - linux/arm/v6
+        - linux/arm/v5
+        - windows/amd64
+    validations:
+      required: true
+
+  - type: input
+    id: metadata_identifier
+    attributes:
+      label: Metadata identifier (manifest `metadata.identifier`)
+      description: Unique science identifier for the image.
+      placeholder: canfar-astroml
+    validations:
+      required: true
+
+  - type: input
+    id: metadata_project
+    attributes:
+      label: Metadata project (manifest `metadata.project`)
+      description: SRCnet project name for the image.
+      placeholder: canfar
+    validations:
+      required: true
+
+  - type: textarea
+    id: build_test
+    attributes:
+      label: Optional build test command (manifest `build.test`)
+      description: Command to validate the built image at runtime.
+      placeholder: uv --version
+
+  - type: dropdown
+    id: based_on_library
+    attributes:
+      label: Is this image based on an existing CANFAR Container Library image?
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
+
+  - type: textarea
+    id: base_rationale
+    attributes:
+      label: If no, explain why and note any new runtime request
+      description: Include the reason a new base/runtime is needed (e.g., Julia).
+      placeholder: We need a new Julia runtime because...
+
+  - type: textarea
+    id: maintenance_plan
+    attributes:
+      label: Maintenance plan / update cadence (recommended)
+      description: How will the image be maintained over time?
+      placeholder: We'll update tags on each upstream release and respond to CVEs.
+
+  - type: checkboxes
+    id: ci_confirmation
+    attributes:
+      label: Integration tests confirmation
+      description: The manifest PR must pass automated checks.
+      options:
+        - label: I confirm the manifest PR passes automated integration tests.
+          required: true

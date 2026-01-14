@@ -7,13 +7,14 @@ Let's walk through the full lifecycle of a library image from start to finish to
 To request a new image be added to the library, you need to open a new issue in this repository. Please select the "Request New Image" template and fill out the form. We will review your request and get back to you as soon as possible.
 In the request issue, you will be asked to provide the following information:
 
-1. Contact information for the upstream maintainers
-2. Whether the image source code is available under an [OSI Approved License](https://opensource.org/licenses)?
-3. Is the software astronomy related and of interest to the community?
-4. Link to the associated manifest pull request to be reviewed and merged once the request is approved
-5. Link to the upstream `Dockerfile` to be reviewed for best practices, security, and optimization. (Performed on the manifest pull request)
-6. Is the image based on an existing library image (for example, `base` or `python`)? If not, why not?
-7. The manifest pull request passes all tests including static analysis, linting, and functional testing.
+1. Link to the upstream project (git repository)
+2. Upstream maintainer contact information (mapped to manifest `maintainers`)
+3. Container details mapped to schema fields (image name, tags, platforms, metadata identifier/project, optional test command)
+4. Confirmation that the source is under an [OSI Approved License](https://opensource.org/licenses) and the license name (for example, MIT)
+5. Astronomy relevance and community use case
+6. Link to the manifest pull request to be reviewed and merged once the request is approved
+7. Whether the image is based on an existing library image (for example, `base` or `python`); if not, explain why and note any runtime request
+8. Confirmation that the manifest pull request passes automated integration tests
 
 ## Image Manifest
 
