@@ -3,7 +3,7 @@ hide:
     - toc
 ---
 
-# CANFAR Library Manifest
+# CANFAR Container Library Schema
 
 Schema to capture ownership, build source, intent, and identity for library artifacts.
 
@@ -56,7 +56,7 @@ Repository information for the image build source.
 
 | Property | Type | Required | Possible values | Description | Examples |
 | -------- | ---- | -------- | --------------- | ----------- | -------- |
-| repo | `string` | ✅ | Format: [`uri`](https://json-schema.org/understanding-json-schema/reference/string#built-in-formats) | git repo | ```https://github.com/opencadc/canfar-library``` |
+| repo | `string` | ✅ | Format: [`uri`](https://json-schema.org/understanding-json-schema/reference/string#built-in-formats) | Git repository. | ```https://github.com/opencadc/canfar-library``` |
 | tag | `string` | ✅ | string | git tag | ```refs/tags/v1.0.0```, ```v1.0.0``` |
 
 ## Maintainer
@@ -71,8 +71,8 @@ Details about the maintainer of the image.
 | -------- | ---- | -------- | --------------- | ------- | ----------- |
 | name | `string` | ✅ | string |  | Name of the maintainer. |
 | email | `string` | ✅ | string |  | Contact email. |
-| github | `string` or `null` |  | string | `null` | Github Username. |
-| gitlab | `string` or `null` |  | string | `null` | Gitlab Username. |
+| github | `string` or `null` |  | string | `null` | GitHub Username. |
+| gitlab | `string` or `null` |  | string | `null` | GitLab Username. |
 
 ## Metadata
 

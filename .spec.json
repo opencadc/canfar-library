@@ -192,7 +192,7 @@
       "description": "Repository information for the image build source.",
       "properties": {
         "repo": {
-          "description": "git repo",
+          "description": "Git repository.",
           "examples": [
             "https://github.com/opencadc/canfar-library"
           ],
@@ -242,8 +242,8 @@
             }
           ],
           "default": null,
-          "description": "Github Username.",
-          "title": "Github Username"
+          "description": "GitHub Username.",
+          "title": "GitHub Username"
         },
         "gitlab": {
           "anyOf": [
@@ -255,8 +255,8 @@
             }
           ],
           "default": null,
-          "description": "Gitlab Username.",
-          "title": "Gitlab Username"
+          "description": "GitLab Username.",
+          "title": "GitLab Username"
         }
       },
       "required": [
@@ -331,6 +331,6 @@
     "build",
     "metadata"
   ],
-  "title": "CANFAR Library Manifest",
+  "title": "CANFAR Container Library Schema",
   "type": "object"
 }

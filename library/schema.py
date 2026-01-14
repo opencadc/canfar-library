@@ -28,13 +28,13 @@ class Maintainer(BaseModel):
     )
     github: Optional[str] = Field(
         None,
-        title="Github Username",
-        description="Github Username.",
+        title="GitHub Username",
+        description="GitHub Username.",
     )
     gitlab: Optional[str] = Field(
         None,
-        title="Gitlab Username",
-        description="Gitlab Username.",
+        title="GitLab Username",
+        description="GitLab Username.",
     )
 
     model_config = ConfigDict(extra="forbid", validate_assignment=True)
@@ -46,7 +46,7 @@ class Git(BaseModel):
     repo: AnyUrl = Field(
         ...,
         title="Repository",
-        description="git repo",
+        description="Git repository.",
         examples=["https://github.com/opencadc/canfar-library"],
     )
     tag: str = Field(
@@ -148,7 +148,7 @@ class Metadata(BaseModel):
 
 
 class Manifest(BaseModel):
-    """CANFAR Library manifest schema."""
+    """CANFAR Container Library Schema."""
 
     name: str = Field(..., description="Image name.", examples=["astroml"])
     maintainers: List[Maintainer] = Field(
@@ -166,7 +166,7 @@ class Manifest(BaseModel):
         json_schema_extra={
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "$id": "https://raw.githubusercontent.com/opencadc/canfar-library/main/.spec.json",
-            "title": "CANFAR Library Manifest",
+            "title": "CANFAR Container Library Schema",
             "description": "Schema to capture ownership, build source, intent, and identity for library artifacts.",
         },
     )

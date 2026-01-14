@@ -1,12 +1,12 @@
 # Frequently Asked Questions
 
-As stewards of CANFAR Library and maintainers of many images in the library, we understand the importance of providing a smooth and efficient experience for users. To that end, we have compiled a list of frequently asked questions and their answers to help you get the most out of the library.
+As stewards of the CANFAR Container Library and maintainers of many images in the library, we understand the importance of providing a smooth and efficient experience for users. To that end, we have compiled a list of frequently asked questions and their answers to help you get the most out of the library.
 
 ## What do you mean by `Library`?
 
-The CANFAR Library is a collection of container images that are built and published under the `library` namespace on the [CANFAR Image Registry](https://images.canfar.net). We use the term "library" to refer to this collection of images, as well as the process and tools for building and maintaining these images in this repository.
+The CANFAR Container Library is a collection of container images that are built and published under the `library` namespace on the [CANFAR Image Registry](https://images.canfar.net). We use the term "library" to refer to this collection of images, as well as the process and tools for building and maintaining these images in this repository.
 
-When using canfar clients to create a new session, `library` is the default image namespace. For example, to create a new session using the `images.canfar.net/library/astroml:latest` image, you can simply run the following shorthand:
+When using CANFAR clients to create a new session, `library` is the default image namespace. For example, to create a new session using the `images.canfar.net/library/astroml:latest` image, you can simply run the following shorthand:
 
 ```sh
 canfar create notebook astroml
@@ -24,10 +24,10 @@ The easiest way to request a new image be added to the library is to [open a new
 
 ## How are library images built?
 
-The library images are;
+The library images are:
 
-- Built in the Github Actions infrastructure to ensure consistent, secure, and reproducible builds.
-- Based on a manifest that describes the image's source, build configuration, metadata and other information. The manifest is written in YAML and is validated against the [Library's JSON schema](https://github.com/opencadc/canfar-library/blob/main/.spec.json) to ensure correctness.
+- Built in the GitHub Actions infrastructure to ensure consistent, secure, and reproducible builds.
+- Based on a manifest that describes the image's source, build configuration, metadata, and other information. The manifest is written in YAML and is validated against the [Library's JSON schema](https://github.com/opencadc/canfar-library/blob/main/.spec.json) to ensure correctness.
 - Built using the [Docker Buildx](https://docs.docker.com/buildx/working-with-buildx/) tool triggered by changes to the manifest in the repository.
 
 ## Does the library only contain astronomy software?
