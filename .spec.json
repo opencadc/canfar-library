@@ -2,27 +2,31 @@
   "$defs": {
     "Build": {
       "additionalProperties": false,
-      "description": "Build information.",
+      "description": "Configuration for building the container image.",
       "properties": {
         "path": {
           "default": ".",
-          "description": "Path to the directory containing the Dockerfile; defaults to the root of the repository.",
+          "description": "Directory containing the Dockerfile.",
+          "examples": [
+            ".",
+            "images/base"
+          ],
           "title": "Path",
           "type": "string"
         },
         "dockerfile": {
           "default": "Dockerfile",
-          "description": "Name of the Dockerfile relative to the path.",
+          "description": "Dockerfile.",
           "examples": [
             "Dockerfile",
-            "Dockerfile-alternate"
+            "base.Dockerfile"
           ],
           "title": "Dockerfile",
           "type": "string"
         },
         "context": {
           "default": ".",
-          "description": "Build context path relative to the Dockerfile.",
+          "description": "Build context relative to path.",
           "examples": [
             ".",
             "../"
@@ -43,7 +47,7 @@
           "default": [
             "linux/amd64"
           ],
-          "description": "Set target platforms for build.",
+          "description": "Target platforms.",
           "examples": [
             [
               "linux/amd64"
@@ -68,7 +72,7 @@
           "type": "array"
         },
         "tags": {
-          "description": "Tags produced by this build entry.",
+          "description": "Image tags.",
           "examples": [
             "latest",
             "1.0.0"
@@ -92,7 +96,7 @@
             }
           ],
           "default": null,
-          "description": "Set build-time variables for the build.",
+          "description": "Build-time variables.",
           "examples": [
             {
               "FOO": "bar"
@@ -113,7 +117,7 @@
             }
           ],
           "default": null,
-          "description": "Add annotation to the container image.",
+          "description": "Annotations for the image.",
           "examples": [
             {
               "canfar.image.type": "base"
@@ -134,7 +138,7 @@
             }
           ],
           "default": null,
-          "description": "Add metadata to the container image.",
+          "description": "Labels for the image.",
           "examples": [
             {
               "org.opencontainers.image.description": "Base image for CANFAR Science Platform",
@@ -153,7 +157,7 @@
             }
           ],
           "default": null,
-          "description": "Set the target build stage to build.",
+          "description": "Target stage to build.",
           "examples": [
             "runtime"
           ],
@@ -162,15 +166,19 @@
         "test": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Run"
+              "type": "string"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Command to run in the created container to verify the image is working.",
-          "title": "Image Test Command"
+          "description": "Test cmd to verify the image.",
+          "examples": [
+            "bash -c 'echo hello world'",
+            "bash -c ./test.sh"
+          ],
+          "title": "Test Command"
         }
       },
       "required": [
@@ -181,36 +189,26 @@
     },
     "Git": {
       "additionalProperties": false,
-      "description": "Git repository which contains build source.",
+      "description": "Repository information for the image build source.",
       "properties": {
         "repo": {
-          "description": "Git repository which contains the build source.",
+          "description": "git repo",
+          "examples": [
+            "https://github.com/opencadc/canfar-library"
+          ],
           "format": "uri",
           "minLength": 1,
           "title": "Repository",
           "type": "string"
         },
         "tag": {
-          "description": "Tag reference to checkout for build.",
+          "description": "git tag",
           "examples": [
             "refs/tags/v1.0.0",
             "v1.0.0"
           ],
           "title": "Git Tag Reference",
           "type": "string"
-        },
-        "sha": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Optional commit SHA for the Git Tag Reference.If provided, the build will fail if the SHA does not match the tag reference.If not provided, the SHA is looked up from the tag reference.",
-          "title": "Commit SHA for the Git Tag Reference"
         }
       },
       "required": [
@@ -222,15 +220,15 @@
     },
     "Maintainer": {
       "additionalProperties": false,
-      "description": "Build Maintainer Information.",
+      "description": "Details about the maintainer of the image.",
       "properties": {
         "name": {
-          "description": "Full name of the maintainer.",
+          "description": "Name of the maintainer.",
           "title": "Name",
           "type": "string"
         },
         "email": {
-          "description": "Contact email, required for traceability.",
+          "description": "Contact email.",
           "title": "Email",
           "type": "string"
         },
@@ -244,8 +242,8 @@
             }
           ],
           "default": null,
-          "description": "Optional Github Username.",
-          "title": "Maintainer Github"
+          "description": "Github Username.",
+          "title": "Github Username"
         },
         "gitlab": {
           "anyOf": [
@@ -257,8 +255,8 @@
             }
           ],
           "default": null,
-          "description": "Optional Gitlab Username.",
-          "title": "Maintainer Gitlab"
+          "description": "Gitlab Username.",
+          "title": "Gitlab Username"
         }
       },
       "required": [
@@ -288,38 +286,15 @@
       ],
       "title": "Metadata",
       "type": "object"
-    },
-    "Run": {
-      "description": "Test information for the image.",
-      "properties": {
-        "cmd": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Command to run in the created container to verify the image is working. The command is run with `docker run --rm -it <image> <cmd>`, where image is populated automatically from the build process. If the command returns a non-zero exit code, the test is considered to have failed.",
-          "examples": [
-            "bash -c 'echo hello world'"
-          ],
-          "title": "Testing Command"
-        }
-      },
-      "title": "Run",
-      "type": "object"
     }
   },
   "$id": "https://raw.githubusercontent.com/opencadc/canfar-library/main/.spec.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
-  "description": "Single, reviewable schema to capture ownership, build source, build intent, and downstream identity for library artifacts.",
+  "description": "Schema to capture ownership, build source, intent, and identity for library artifacts.",
   "properties": {
     "name": {
-      "description": "Name of the image.",
+      "description": "Image name.",
       "examples": [
         "astroml"
       ],
@@ -327,7 +302,7 @@
       "type": "string"
     },
     "maintainers": {
-      "description": "List of maintainers responsible for the image.",
+      "description": "Image maintainers.",
       "items": {
         "$ref": "#/$defs/Maintainer"
       },
@@ -336,16 +311,17 @@
     },
     "git": {
       "$ref": "#/$defs/Git",
-      "description": "Repository information for the image.",
+      "description": "Image repository.",
       "title": "Git Info"
     },
     "build": {
       "$ref": "#/$defs/Build",
-      "description": "Build information for the image.",
+      "description": "Image build info.",
       "title": "Build Info"
     },
     "metadata": {
-      "$ref": "#/$defs/Metadata"
+      "$ref": "#/$defs/Metadata",
+      "description": "Image metadata."
     }
   },
   "required": [

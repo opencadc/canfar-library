@@ -18,71 +18,66 @@ Platform = Literal[
 
 
 class Maintainer(BaseModel):
-    """Build Maintainer Information."""
+    """Details about the maintainer of the image."""
 
-    name: str = Field(..., title="Name", description="Full name of the maintainer.")
+    name: str = Field(..., title="Name", description="Name of the maintainer.")
     email: str = Field(
         ...,
         title="Email",
-        description="Contact email, required for traceability.",
+        description="Contact email.",
     )
     github: Optional[str] = Field(
         None,
-        title="Maintainer Github",
-        description="Optional Github Username.",
+        title="Github Username",
+        description="Github Username.",
     )
     gitlab: Optional[str] = Field(
         None,
-        title="Maintainer Gitlab",
-        description="Optional Gitlab Username.",
+        title="Gitlab Username",
+        description="Gitlab Username.",
     )
 
     model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
 
 class Git(BaseModel):
-    """Git repository which contains build source."""
+    """Repository information for the image build source."""
 
     repo: AnyUrl = Field(
         ...,
         title="Repository",
-        description="Git repository which contains the build source.",
+        description="git repo",
+        examples=["https://github.com/opencadc/canfar-library"],
     )
     tag: str = Field(
         ...,
         title="Git Tag Reference",
-        description="Tag reference to checkout for build.",
+        description="git tag",
         examples=["refs/tags/v1.0.0", "v1.0.0"],
-    )
-    sha: Optional[str] = Field(
-        None,
-        title="Commit SHA for the Git Tag Reference",
-        description="Optional commit SHA for the Git Tag Reference."
-        "If provided, the build will fail if the SHA does not match the tag reference."
-        "If not provided, the SHA is looked up from the tag reference.",
     )
 
     model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
 
 class Build(BaseModel):
-    """Build information."""
+    """Configuration for building the container image."""
 
     path: str = Field(
         ".",
         title="Path",
-        description="Path to the directory containing the Dockerfile; defaults to the root of the repository.",
+        description="Directory containing the Dockerfile.",
+        examples=[".", "images/base"],
     )
     dockerfile: str = Field(
         "Dockerfile",
         title="Dockerfile",
-        description="Name of the Dockerfile relative to the path.",
-        examples=["Dockerfile", "Dockerfile-alternate"],
+        description="Dockerfile.",
+        examples=["Dockerfile", "base.Dockerfile"],
     )
     context: str = Field(
         ".",
         title="Build Context",
-        description="Build context path relative to the Dockerfile.",
+        description="Build context relative to path.",
         examples=[".", "../"],
     )
     builder: str = Field(
@@ -94,31 +89,31 @@ class Build(BaseModel):
     platforms: list[Platform] = Field(
         default=["linux/amd64"],
         title="Target Platforms",
-        description="Set target platforms for build.",
+        description="Target platforms.",
         examples=[["linux/amd64"], ["linux/amd64", "linux/arm64"]],
     )
     tags: List[str] = Field(
         ...,
         title="Container Image Tags",
-        description="Tags produced by this build entry.",
+        description="Image tags.",
         examples=["latest", "1.0.0"],
     )
     args: Optional[dict[str, str]] = Field(
         None,
         title="Build Args",
-        description="Set build-time variables for the build.",
+        description="Build-time variables.",
         examples=[{"FOO": "bar"}],
     )
     annotations: Optional[dict[str, str]] = Field(
         None,
         title="Image Annotations",
-        description="Add annotation to the container image.",
+        description="Annotations for the image.",
         examples=[{"canfar.image.type": "base"}],
     )
     labels: Optional[dict[str, str]] = Field(
         None,
         title="Image Labels",
-        description="Add metadata to the container image.",
+        description="Labels for the image.",
         examples=[
             {
                 "org.opencontainers.image.title": "CANFAR Base Image",
@@ -129,14 +124,15 @@ class Build(BaseModel):
     target: Optional[str] = Field(
         None,
         title="Build Target",
-        description="Set the target build stage to build.",
+        description="Target stage to build.",
         examples=["runtime"],
     )
 
-    test: Optional[Run] = Field(
+    test: Optional[str] = Field(
         None,
-        title="Image Test Command",
-        description="Command to run in the created container to verify the image is working.",
+        title="Test Command",
+        description="Test cmd to verify the image.",
+        examples=["bash -c 'echo hello world'", "bash -c ./test.sh"],
     )
 
     model_config = ConfigDict(extra="forbid", validate_assignment=True)
@@ -151,39 +147,18 @@ class Metadata(BaseModel):
     project: str = Field(..., description="SRCnet Project name for the image.")
 
 
-class Run(BaseModel):
-    """Test information for the image."""
-
-    cmd: Optional[str] = Field(
-        None,
-        title="Testing Command",
-        description="Command to run in the created container to verify the image is working."
-        " The command is run with `docker run --rm -it <image> <cmd>`, where image is populated automatically from the build process."
-        " If the command returns a non-zero exit code, the test is considered to have failed.",
-        examples=["bash -c 'echo hello world'"],
-    )
-
-
 class Manifest(BaseModel):
-    """
-    Manifest information.
-    """
+    """CANFAR Library manifest schema."""
 
-    name: str = Field(..., description="Name of the image.", examples=["astroml"])
+    name: str = Field(..., description="Image name.", examples=["astroml"])
     maintainers: List[Maintainer] = Field(
         ...,
         title="Maintainers",
-        description="List of maintainers responsible for the image.",
+        description="Image maintainers.",
     )
-    git: Git = Field(
-        ..., title="Git Info", description="Repository information for the image."
-    )
-    build: Build = Field(
-        ..., title="Build Info", description="Build information for the image."
-    )
-    metadata: Metadata = Field(
-        ..., title="Metadata", description="Metadata for the image."
-    )
+    git: Git = Field(..., title="Git Info", description="Image repository.")
+    build: Build = Field(..., title="Build Info", description="Image build info.")
+    metadata: Metadata = Field(..., title="Metadata", description="Image metadata.")
 
     model_config = ConfigDict(
         extra="forbid",
